@@ -6,3 +6,21 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(STP main.cpp)
 add_executable(EX1 exercise1.cpp)
 add_executable(EX2 exercise2.cpp benchmark.cpp benchmark.h lehmer.cpp lehmer.h)
+
+
+option(UBSAN "Undefined Behavior Sanitizer" OFF)
+option(ASAN "Address Sanitizer" OFF)
+
+if (UBSAN)
+    message(STATUS "Enabling Undefined Behavior Sanitizer")
+    add_compile_options(-fsanitize=undefined -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=undefined)
+endif(UBSAN)
+
+if (ASAN)
+    message(STATUS "Enabling Address Sanitizer")
+    add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address)
+endif(ASAN)
+
+add_executable(test_polygon test_polygon.cpp polygon.cpp)
