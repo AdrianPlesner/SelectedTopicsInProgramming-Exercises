@@ -30,82 +30,95 @@ int main()
     {
         std::cout << ruler << std::endl;
         polygon poly(1);
-        // TODO: ???
+        // custom-constructor(1)
+        // destructor
     }
     {
         std::cout << ruler << std::endl;
         polygon poly = 1;
-        // TODO: ???
+        // custom-constructor(1)
+        // destructor
     }
     {
         std::cout << ruler << std::endl;
         const polygon poly0;
-        // TODO: ???
+        // default constructor
 
         std::cout << ruler << std::endl;
         polygon poly1 = poly0;
-        // TODO: ???
+        // copy-constructor
 
         std::cout << ruler << std::endl;
         polygon poly2 = polygon(2);
-        // TODO: ???
+        // custom-constructor(2)
 
         std::cout << ruler << std::endl;
         polygon poly3{{1,2},{3,4},{5,6},{7,8}};
-        // TODO: ???
+        // custom-constructor{{1,2},{3,4},{5,6},{7,8}}
 
         std::cout << ruler << std::endl;
         poly2 = poly1;
-        // TODO: ???
+        // copy-assignment
 
         std::cout << ruler << std::endl;
         poly2 = polygon_factory(3);
-        // TODO: ???
+        // custom-constructor(3)
+        // move-assignment
+        // destructor
 
         std::cout << ruler << std::endl;
         draw_value(poly0);
-        // TODO: ???
+        // copy-constructor
+        // passed-by-value
+        // destructor
 
         std::cout << ruler << std::endl;
         draw(poly0);
-        // TODO: ???
+        // passed-by-const-reference
 
         std::cout << ruler << std::endl;
         draw(poly1);
-        // TODO: ???
+        // passed-by-lvalue-reference
 
         std::cout << ruler << std::endl;
         draw(polygon_factory(4));
-        // TODO: ???
+        // custom-constructor(4)
+        // passed-by-rvalue-reference
+        // destructor
 
         std::cout << ruler << std::endl;
         std::vector<polygon> polies(4, poly3);
-        // TODO: ???
+        // copy-constructor x4
 
         std::cout << ruler << std::endl;
         polies.push_back(poly3);
-        // TODO: ???
+        // copy-constructor
+        // something something move
         // TODO: Why are so many operations here?
 
         std::cout << ruler << std::endl;
         polies.push_back(poly3);
-        // TODO: ???
+        // copy-constructor
         // TODO: Why is the number of operations fewer here than for the above one?
+        // Dunno man måske allocater den mere end vi skal bruge /shrug
 
         std::cout << ruler << std::endl;
         for (polygon p : polies)
             std::cout << p << " at " << &p << '\n';
-        // TODO: ???!
-        // TODO: Can we make the loop above more efficient?
-        // TODO: This is an incredibly common mistake, make sure to fix it, or ask.
+        // copy-constructor
+        // print statement
+        // destructor
+        // x6
+        // TODO: Can we make the loop above more efficient? Yes, use reference &
+
+
+        // destructor x9
     }
     {
         std::cout << ruler << std::endl;
-        draw(1);
-        // TODO: ???
-        // TODO: What is going on here? Why "1" is treated as polygon? This is unlikely to be intentional.
-        // TODO: Can we forbid the last statement without breaking the previous code?
-        // TODO: Fix it in polygon.hpp so that this line does not compile.
+        //draw(1);
+        // custom-constructor, passed-by-rvalue-reference, destructor
+        // No more
     }
     {
         std::cout << ruler << std::endl;

@@ -48,7 +48,7 @@ public: // interface:
     polygon(); // default-constructor
 
     /** Custom constructors: */
-    polygon(size_t count); // custom-constructor(int)
+    explicit polygon(size_t count); // custom-constructor(int)
     polygon(const std::initializer_list<point>&); // custom-constructor{...}
 
     /** Basic field access, note "const"! */

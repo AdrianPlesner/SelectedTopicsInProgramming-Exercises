@@ -1,10 +1,9 @@
 #include <iostream>
-
+#include <string>
+using namespace std;
 int main() {
-    int i[] {1,2,3};
-    for (auto k : i) {
-        std::cout << k;
-    }
+    string a{"abc"};
+    cout << (a.find('h') == string::npos);
 
     return 0;
 }

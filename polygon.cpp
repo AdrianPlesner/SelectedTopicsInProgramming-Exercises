@@ -9,8 +9,8 @@
  */
 
 /**
- * TODO: 1) Very important: fix the memory leak. Address sanitizer may provide a quick help.
- * TODO: 2) Change the initializations to uniform initializations with curly braces.
+ * DONE: 1) Very important: fix the memory leak. Address sanitizer may provide a quick help.
+ * DONE: 2) Change the initializations to uniform initializations with curly braces.
  *          Be careful, not all make sense.
  * TODO: 3) move-constructor and move-assignment operator have identical code,
  *          which is difficult to maintain. How can we apply the DRY principle? Fix it!
@@ -31,31 +31,32 @@ std::ostream& operator<<(std::ostream& os, const point& p)
 
 polygon::~polygon() noexcept
 {
+    delete [] points;
     std::cout << "destructor\n";
 }
 
 polygon::polygon():
-    count(0), points(nullptr) // initialize
+    count{0}, points{nullptr} // initialize
 {
     std::cout << "default-constructor\n";
 }
 
 polygon::polygon(size_t count):
-    count(count), points(count ? new point[count]() : nullptr)
+    count{count}, points{count ? new point[count]() : nullptr}
 {
     std::cout << "custom-constructor(" << count << ")\n";
 }
 
 polygon::polygon(const std::initializer_list<point>& ps):
-    count(ps.size()), points(count ? new point[count]() : nullptr)
+    count{ps.size()}, points{count ? new point[count]() : nullptr}
 {
     std::cout << "custom-constructor{";
-    for (auto i=0u; i<count; ++i)
+    for (auto i{0u}; i<count; ++i)
         points[i] = std::data(ps)[i];
 
     if (count) {
         std::cout << points[0];
-        for (auto i=1u; i<count; ++i)
+        for (auto i{1u}; i<count; ++i)
             std::cout << ',' << points[i];
     }
     std::cout << "}\n";
@@ -71,7 +72,7 @@ polygon& polygon::operator=(const polygon& other)
         count = other.count; // copy
         points = new point[count]; // allocate -- expensive
         // Third, copy the data:
-        for (auto i = 0u; i < count; ++i) // many assignments -- expensive
+        for (auto i {0u}; i < count; ++i) // many assignments -- expensive
             points[i] = other[i]; // copy-assignment -- potentially expensive
     }
     return *this; // remember to return, otherwise wicked memory issues
@@ -82,7 +83,7 @@ polygon::polygon(const polygon& other):
     points(count ? new point[count] : nullptr) // allocation: expensive
 {
     std::cout << "copy-constructor\n";
-    for (auto i=0u; i<count; ++i)
+    for (auto i{0u}; i<count; ++i)
         points[i] = other[i]; // assignment operation: potentially expensive
 }
 
@@ -109,7 +110,7 @@ std::ostream& operator<<(std::ostream& os, const polygon& poly)
     if (poly.empty()) {
         os << "(empty polygon)";
     } else {
-        for (auto point : poly) // FIXME: is this really efficient?
+        for (auto &point : poly) // FIXED: is this really efficient?
             os << point << " ";
     }
     return os; // remember to return, otherwise wicked memory issues
