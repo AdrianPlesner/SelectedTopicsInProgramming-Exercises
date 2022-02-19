@@ -7,6 +7,7 @@ add_executable(STP main.cpp)
 add_executable(EX1 exercise1.cpp)
 add_executable(EX2 exercise2.cpp benchmark.cpp benchmark.h lehmer.cpp lehmer.h)
 add_executable(EX3 exercise3.cpp)
+add_executable(SS1 main.cpp NumberSeries.cpp NumberSeries.h benchmark.cpp benchmark.h dynamic_NumberSeries.cpp dynamic_NumberSeries.h)
 
 
 option(UBSAN "Undefined Behavior Sanitizer")
