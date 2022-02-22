@@ -5,8 +5,6 @@
 #include "dynamic_NumberSeries.h"
 #include <memory>
 #include <vector>
-#include <memory>
-#include <random>
 
 using namespace std;
 
@@ -30,14 +28,8 @@ dynamic_NumberSeries::dynamic_NumberSeries(const NumberSeries& other) {
 }
 
 dynamic_NumberSeries dynamic_NumberSeries::MakeRandom(int n) {
-    random_device rd;
-    auto engine = default_random_engine{rd()};
-    auto dist = uniform_int_distribution<> {};
-    vector<int> numbers(n);
-    for(auto& v: numbers){
-        v = dist(engine);
-    }
-    return dynamic_NumberSeries(numbers);
+    auto r = NumberSeries::MakeRandom(n);
+    return dynamic_NumberSeries(r);
 }
 
 dynamic_NumberSeries &dynamic_NumberSeries::operator+=(const dynamic_NumberSeries & other) {

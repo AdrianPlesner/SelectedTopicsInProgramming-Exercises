@@ -13,7 +13,6 @@ class NumberSeries {
 private:
     vector<int> values{};
     int minVal{}, maxVal{};
-    int averages[12];
 public:
     NumberSeries() = default;
     //Explicit gør at...

@@ -10,7 +10,6 @@ using namespace std;
 class dynamic_NumberSeries {
 private:
     unique_ptr<NumberSeries> ptr;
-    int averages[12];
 public:
     //Constructor, see implementation
     dynamic_NumberSeries();
