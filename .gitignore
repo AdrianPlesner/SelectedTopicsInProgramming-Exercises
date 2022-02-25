@@ -1,3 +1,10 @@
 # Project exclude paths
 /cmake-build-debug/
 /cmake-build-release/
+calculator/.idea/
+
+calculator/cmake-build-debug/
+
+calculator/cmake-build-release/
+
+.idea/
