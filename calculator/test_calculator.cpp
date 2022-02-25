@@ -39,17 +39,17 @@ TEST_CASE("Calculate expressions lazily")
         CHECK((c <<= b - a)(state) == 1);
         CHECK(c(state) == 1);
 
-        /*
-        // TODO: implement multiplication
+
+        // DONE: implement multiplication
         CHECK((c += b - a * c)(state) == 2);
         CHECK(c(state) == 2);
         CHECK((c += b - a * c)(state) == 1);
         CHECK(c(state) == 1);
-        */
-        /*
+
+
         // TODO: implement other assignments: +=, -=, *=, /=
-        CHECK_THROWS_MESSAGE((c - a += b - c), "assignment destination must be a variable expression");
-        */
+        //CHECK_THROWS_MESSAGE((c - a += b - c), "assignment destination must be a variable expression");
+
     }
     SUBCASE("Parenthesis")
     {

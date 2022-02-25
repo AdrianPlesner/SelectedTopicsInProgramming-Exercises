@@ -21,7 +21,7 @@ namespace calculator
         virtual double operator()(state_t&) const =0;
         virtual ~term_t() = default;
     };
-    enum op_t { plus, minus, add, sub, assign, multiply, divide };
+    enum op_t { plus, minus, add, sub, assign, multiply, divide, add_assign };
 
     class const_t: public term_t {
     public:
@@ -108,10 +108,10 @@ namespace calculator
 
     class assign_t: public term_t {
     public:
-        assign_t(const var_t& a, const shared_ptr<term_t>& b){
+        assign_t(const var_t& a, const shared_ptr<term_t>& b, op_t opr){
             var = make_shared<var_t>(a);
             term = b;
-            op = op_t::plus;
+            op = opr;
         }
         double operator()(state_t& s) const override{
             auto val = (*term)(s);
@@ -143,8 +143,8 @@ namespace calculator
         expr_t(const expr_t& expr, op_t op){
             term = dynamic_pointer_cast<term_t>(make_shared<unary_t>(expr.term, op));
         }
-        expr_t(const var_t& v, const expr_t& e){
-            term = dynamic_pointer_cast<term_t>(make_shared<assign_t>(v, e.term));
+        expr_t(const var_t& v, const expr_t& e, op_t op){
+            term = dynamic_pointer_cast<term_t>(make_shared<assign_t>(v, e.term, op));
         }
         expr_t(const double& d){
             term = dynamic_pointer_cast<term_t>(make_shared<const_t>(d));
@@ -178,7 +178,11 @@ namespace calculator
     inline expr_t operator-(const expr_t& e1, const expr_t& e2) { return expr_t{e1, e2, sub}; }
     inline expr_t operator*(const expr_t& e1, const expr_t& e2) { return expr_t{e1, e2, multiply}; }
     inline expr_t operator/(const expr_t& e1, const expr_t& e2) { return expr_t{e1, e2, divide}; }
-    inline expr_t operator<<=(const var_t& v, const expr_t& e) { return expr_t{v, e}; }
+    inline expr_t operator<<=(const var_t& v, const expr_t& e) { return expr_t{v, e, assign}; }
+    inline expr_t operator+=(const var_t& v, const expr_t& e) { return expr_t{v, expr_t{expr_t{v}, e, add}, assign};}
+    inline expr_t operator-=(const var_t& v, const expr_t& e) { return expr_t{v, expr_t{expr_t{v}, e, sub}, assign};}
+    inline expr_t operator*=(const var_t& v, const expr_t& e) { return expr_t{v, expr_t{expr_t{v}, e, multiply}, assign};}
+    inline expr_t operator/=(const var_t& v, const expr_t& e) { return expr_t{v, expr_t{expr_t{v}, e, divide}, assign};}
 }
 
 #endif // INCLUDE_ALGEBRA_HPP
