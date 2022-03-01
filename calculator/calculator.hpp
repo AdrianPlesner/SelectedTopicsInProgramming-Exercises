@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 #include <stdexcept>
+#include "Visitor.h"
 
 using namespace std;
 
@@ -15,11 +16,11 @@ namespace calculator
     /** Type to capture the state of entire calculator (one number per variable): */
     using state_t = std::vector<double>;
 
-
     class term_t {
     public:
         virtual double operator()(state_t&) const =0;
         virtual ~term_t() = default;
+        virtual void accept(Visitor&)=0;
     };
     enum op_t { plus, minus, add, sub, assign, multiply, divide, add_assign };
 
@@ -29,9 +30,11 @@ namespace calculator
         const_t(double d){
             value = d;
         }
+        double getValue() const {return value;}
         ~const_t() override = default;
-    private:
-        double operator()(state_t&) const override {return value;}
+        void accept(Visitor& v) override{
+            v.visit(*this);
+        }
     };
 
     class unary_t: public term_t {
@@ -40,20 +43,10 @@ namespace calculator
             term = a;
             op = opr;
         }
-        double operator()(state_t& s) const override {
-            if(!term){
-                throw logic_error("Missing operand for unary term");
-            }
-            switch(op){
-                case op_t::plus:
-                    return (*term)(s);
-                case op_t::minus:
-                    return -(*term)(s);
-                default:
-                    throw logic_error("Invalid operator for unary term");
-            }
-        }
+        const op_t getOperator() {return op;}
         ~unary_t() override = default;
+        void accept(Visitor& v) override {v.accept(*this);}
+        const shared_ptr<term_t> getTerm(){return term;}
     private:
         shared_ptr<term_t> term;
         op_t op;
@@ -71,27 +64,10 @@ namespace calculator
             term2 = b;
             op = opr;
         }
-        double operator()(state_t& s) const override{
-            if(!term1 || ! term2){
-                throw logic_error("Missing operand");
-            }
-            auto &exp1 = *term1, &exp2 = *term2;
-            switch (op) {
-                case op_t::add:
-                    return exp1(s) + exp2(s);
-                case op_t::sub:
-                    return exp1(s) - exp2(s);
-                case op_t::multiply:
-                    return exp1(s) * exp2(s);
-                case op_t::divide:
-                    if(exp2(s) == 0){
-                        throw logic_error("Division by zero, not allowed, mister.");
-                    }
-                    return exp1(s) / exp2(s);
-                default:
-                    throw logic_error("Gibberish, invalid operator!");
-            }
-        }
+        void accept(Visitor& v) override {v.visit(*this);}
+        const op_t getOperator(){return opr;}
+        const shared_ptr<term_t> getTerm1(){return term1;}
+        const shared_ptr<term_t> getTerm2(){return term2;}
         ~binary_t() override = default;
     };
 
@@ -183,6 +159,8 @@ namespace calculator
     inline expr_t operator-=(const var_t& v, const expr_t& e) { return expr_t{v, expr_t{expr_t{v}, e, sub}, assign};}
     inline expr_t operator*=(const var_t& v, const expr_t& e) { return expr_t{v, expr_t{expr_t{v}, e, multiply}, assign};}
     inline expr_t operator/=(const var_t& v, const expr_t& e) { return expr_t{v, expr_t{expr_t{v}, e, divide}, assign};}
+
+
 }
 
 #endif // INCLUDE_ALGEBRA_HPP

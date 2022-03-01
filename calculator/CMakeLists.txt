@@ -33,7 +33,7 @@ file(DOWNLOAD https://raw.githubusercontent.com/onqtam/doctest/v2.4.8/doctest/do
 add_library(doctest INTERFACE doctest.h)
 target_include_directories(doctest INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable(test_calculator calculator.hpp test_calculator.cpp expr_t.hpp term_t.hpp)
+add_executable(test_calculator calculator.hpp test_calculator.cpp expr_t.hpp term_t.hpp Visitor.cpp Visitor.h)
 target_link_libraries(test_calculator PRIVATE doctest)
 
 enable_testing()
