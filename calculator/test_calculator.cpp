@@ -2,6 +2,7 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest.h>
+#include "Visitor.h"
 
 TEST_CASE("Calculate expressions lazily")
 {
@@ -11,6 +12,7 @@ TEST_CASE("Calculate expressions lazily")
     auto c = sys.var("c");
     auto state = sys.state();
     auto os = std::ostringstream();
+    Evalutor eval {state};
 
     SUBCASE("Reading the value of a variable from state")
     {

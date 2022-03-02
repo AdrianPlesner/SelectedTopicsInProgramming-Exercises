@@ -3,15 +3,44 @@
 //
 
 #include "Visitor.h"
+
+#include <utility>
 #include "calculator.hpp"
 using namespace calculator;
 
 double Evalutor::visit(const_t &obj) {
-    return result = obj.getValue();
+    return obj.getValue();
+}
+
+Evalutor::Evalutor(vector<double> s) {
+    state = std::move(s);
 }
 
 double Evalutor::visit(var_t &obj){
-    return result = state[obj.get_id()];
+    return state[obj.get_id()];
+}
+
+double Evalutor::visit(binary_t& obj) {
+    auto term1 = obj.getTerm1();
+    auto term2 = obj.getTerm2();
+    if(!term1 || ! term2){
+        throw logic_error("Missing operand");
+    }
+    switch (obj.getOperator()) {
+        case op_t::add:
+            return term1->accept(*this) + term2->accept(*this);
+        case op_t::sub:
+            return term1->accept(*this) - term2->accept(*this);
+        case op_t::multiply:
+            return term1->accept(*this) * term2->accept(*this);
+        case op_t::divide:
+            if(term2->accept(*this) == 0){
+                throw logic_error("Division by zero, not allowed, mister.");
+            }
+            return term1->accept(*this) / term2->accept(*this);
+        default:
+            throw logic_error("Gibberish, invalid operator!");
+    }
 }
 
 double Evalutor::visit(unary_t &obj) {
@@ -21,33 +50,19 @@ double Evalutor::visit(unary_t &obj) {
     }
     switch(obj.getOperator()){
         case op_t::plus:
-            return result = term->accept(*this);
+            return term->accept(*this);
         case op_t::minus:
-            return result = -1 * term->accept(*this);
+            return -1 * term->accept(*this);
         default:
             throw logic_error("Invalid operator for unary term");
     }
 }
 
-double Evalutor::visit(binary_t& obj){
-    auto term1 = obj.getTerm1();
-    auto term2 = obj.getTerm2();
-    if(!term1 || ! term2){
-        throw logic_error("Missing operand");
-    }
-    switch (obj.getOperator()) {
-        case op_t::add:
-            return result = term1->accept(*this) + term2->accept(*this);
-        case op_t::sub:
-            return result = term1->accept(*this) - term2->accept(*this);
-        case op_t::multiply:
-            return result = term1->accept(*this) * term2->accept(*this);
-        case op_t::divide:
-            if(term2->accept(*this) == 0){
-                throw logic_error("Division by zero, not allowed, mister.");
-            }
-            return result = term1->accept(*this) / term2->accept(*this);
-        default:
-            throw logic_error("Gibberish, invalid operator!");
-    }
+double Evalutor::visit(assign_t &obj) {
+    auto term = obj.getTerm();
+    auto var = obj.getVar();
+    auto val = term->accept(*this);
+    state[var->get_id()] = val;
+    return val;
 }
+

@@ -6,17 +6,22 @@
 #ifndef CALCULATOR_VISITOR_H
 #define CALCULATOR_VISITOR_H
 #include "calculator.hpp"
+#include <vector>
 
 class Visitor {
     virtual void visit(const_t&) = 0;
     virtual void visit(var_t&) = 0;
     virtual void visit(assign_t&) = 0;
     virtual void visit(unary_t&) = 0;
-    virtual void visit(bianry_t&) = 0;
+    virtual void visit(binary_t&) = 0;
 };
 
 class Evalutor : public Visitor {
 public:
+    Evalutor(const Evalutor&) = delete;
+
+    Evalutor(vector<double> vector1);
+
     double visit(const_t&) override;
     double visit(var_t&) override;
     double visit(assign_t&) override;
@@ -24,7 +29,7 @@ public:
     double visit(binary_t&) override;
 private:
     state_t state;
-    double result {0};
+
 };
 
 class Printer : public Visitor {

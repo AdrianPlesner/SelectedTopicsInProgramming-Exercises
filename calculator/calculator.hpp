@@ -18,7 +18,6 @@ namespace calculator
 
     class term_t {
     public:
-        virtual double operator()(state_t&) const =0;
         virtual ~term_t() = default;
         virtual void accept(Visitor&)=0;
     };
@@ -77,6 +76,7 @@ namespace calculator
         var_t(const var_t&) = default;
         explicit var_t(size_t id): id{id} {}
         size_t get_id() const {return id;}
+        void accept(Visitor& v) override {v.visit(*this);}
         ~var_t() override = default;
     private:
         size_t id{};
@@ -89,24 +89,22 @@ namespace calculator
             term = b;
             op = opr;
         }
-        double operator()(state_t& s) const override{
-            auto val = (*term)(s);
-            s[var->get_id()] = val;
-            return val;
-        }
+        shared_ptr<var_t> getVar() {return var;}
+        shared_ptr<term_t> getTerm() {return term;}
+        op_t getOperator() {return op;}
+        void accept(Visitor& v) override {v.visit(*this);}
         ~assign_t() override = default;
     private:
         shared_ptr<var_t> var;
         shared_ptr<term_t> term;
         op_t op;
-
-
     };
 
     class expr_t {
     public:
         shared_ptr<term_t> term;
         double operator()(state_t& s) const { return  (*term)(s);}
+        void accept(Visitor& v) {v.visit(*term);}
         expr_t(const expr_t& e){
             term = e.term;
         }
