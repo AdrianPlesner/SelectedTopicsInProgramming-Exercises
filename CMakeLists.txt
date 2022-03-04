@@ -9,6 +9,7 @@ add_executable(EX2 exercise2.cpp benchmark.cpp benchmark.h lehmer.cpp lehmer.h)
 add_executable(EX3 exercise3.cpp)
 add_executable(SS1 main.cpp NumberSeries.cpp NumberSeries.h benchmark.cpp benchmark.h dynamic_NumberSeries.cpp dynamic_NumberSeries.h)
 add_executable(EX5 exercise5.cpp Base.cpp Base.h Derived.cpp Derived.h benchmark.h benchmark.cpp)
+add_executable(EX7 exercise7.cpp)
 
 
 option(UBSAN "Undefined Behavior Sanitizer")
